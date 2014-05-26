@@ -1,8 +1,7 @@
-// 做了将近一天，140523
-#include <list>
 #include <iostream>
-#include <algorithm>
+#include <stdlib.h>
 // using namespace std;
+
 class node{
 public:
 	int key;
@@ -66,7 +65,12 @@ public:
 	void delete_last()
 	{
 		if(first == 0) return;
+
 		int val = first->pre->key;
+		if(first->pre == first)
+			first = 0;
+		else
+			first->pre = first->pre->pre;
 
 		find_delete(val);
 
@@ -90,21 +94,8 @@ public:
 				}
 			}
 		}
-
 		if(cur == 0) return -1;
 		int ret = cur->value;
-		if(cur == first){
-			if(first != first->pre){
-				cur->next->pre = first->pre;
-				first = cur->next;
-			}else
-				first = 0;
-		}else if(cur == first->pre){
-			first->pre = first->pre->pre;
-		}else{
-			cur->pre->next = cur->next;
-			cur->next->pre = cur->pre;
-		}
 		if(dir == 0) root = pop(cur);
 		if(dir == 1) before->left = pop(cur);
 		if(dir == 2) before->right = pop(cur);
@@ -177,59 +168,25 @@ public:
 	}
 };
 
-
-class LRUCache{
-public:
-	heap myHeap;
-	int maxsize;
-	int size;
-    LRUCache(int capacity) {
-		maxsize = capacity;
-		size = 0;
-    }
-    
-    int get(int key) {
-		int ret = myHeap.find_delete(key);
-		if(ret != -1){
-			node * n = new node(key, ret, 0,0,0,0);
-			myHeap.push(n);
-		}
-		return ret;
-    }
-    
-    void set(int key, int value) {
-		if(myHeap.find_delete(key) == -1){
-		if(size < maxsize)
-			++size;
-		else
-			myHeap.delete_last();
-		}
-		node * n = new node(key, value, 0,0,0,0);
-		myHeap.push(n);
-
-	}
-};
-struct myequal{
-	myequal(int aa)
-		:a(aa)
-	{}
-	bool operator ()(int b)
-	{
-		return a == b;
-	}
-	int a;
-};
 int main()
 {
-	LRUCache lc(2);
-	lc.set(2,12);
-	lc.set(1,13);
-	lc.set(4,19);
-
-	std::cout<<lc.get(1)<<std::endl;
-	std::cout<<lc.get(2)<<std::endl;
-	std::cout<<"END"<<std::endl;
-
-
+	heap h;
+	int len = 20;
+	int maxN = 100;
+	for(int i=0; i<len; ++i){
+		node * n = new node(i, 0, 0, 0, 0, 0);
+// rand()%maxN, 0,0);
+		h.push(n);
+	}
+	h.show();
+	for(int i=0; i<10; ++i){
+		// h.pop();
+		// h.find_delete(0);
+		h.delete_last();
+		std::cout<<std::endl;
+		// std::cout<<"key: "<<nn->key<<std::endl;
+		// h.root->show(h.root);
+		h.show();
+	}
 	return 0;
 }
